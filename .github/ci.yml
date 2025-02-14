@@ -36,6 +36,18 @@ jobs:
 
       - name: Run Black (code formatting)
         run: black . --check
+     
+      - name: Auto-format with Black and commit changes
+        if: failure() && steps.black.outcome == 'failure'
+        run: |
+          black .
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-format code with Black" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Flake8 (linting)
         run: flake8 .
@@ -48,13 +60,3 @@ jobs:
 
       - name: Run tests with pytest
         run: pytest
-
-      - name: Auto-format with Black and commit changes
-        if: failure() && steps.black.outcome == 'failure'
-        run: |
-          black .
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Auto-format code with Black" || echo "No changes to commit"
-          git push
