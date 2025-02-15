@@ -6,7 +6,6 @@ from models import Base, Recipe as RecipeModel
 from schemas import RecipeCreate, Recipe as RecipeSchema
 from database import engine, async_session
 
-
 app = FastAPI()
 
 
@@ -40,7 +39,7 @@ async def get_recipes():
             )
         )
         return result.scalars().all()
-        
+
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
 async def get_recipe(recipe_id: int):
