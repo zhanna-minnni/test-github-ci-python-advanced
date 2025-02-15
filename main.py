@@ -35,7 +35,9 @@ async def create_recipe(recipe: RecipeCreate):
 async def get_recipes():
     async with async_session() as session:
         result = await session.execute(
-            select(RecipeModel).order_by(RecipeModel.views.desc(), RecipeModel.cooking_time)
+            select(RecipeModel).order_by(
+                RecipeModel.views.desc(), RecipeModel.cooking_time
+            )
         )
         recipes = result.scalars().all()
         return recipes
