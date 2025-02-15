@@ -39,7 +39,7 @@ async def get_recipes():
                 RecipeModel.views.desc(), RecipeModel.cooking_time
             )
         )
-        return = result.scalars().all()
+        return result.scalars().all()
         
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
