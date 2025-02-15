@@ -39,9 +39,8 @@ async def get_recipes():
                 RecipeModel.views.desc(), RecipeModel.cooking_time
             )
         )
-        recipes = result.scalars().all()
-        return recipes
-
+        return = result.scalars().all()
+        
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
 async def get_recipe(recipe_id: int):
@@ -56,3 +55,5 @@ async def get_recipe(recipe_id: int):
             select(RecipeModel).where(RecipeModel.id == recipe_id)
         )
         recipe = result.scalars().first()
+
+        return recipe
