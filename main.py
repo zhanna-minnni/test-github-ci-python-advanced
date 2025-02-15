@@ -1,10 +1,14 @@
-from fastapi import FastAPI
-from sqlalchemy.future import select
-from sqlalchemy import update
 from typing import List
-from models import Base, Recipe as RecipeModel
-from schemas import RecipeCreate, Recipe as RecipeSchema
-from database import engine, async_session
+
+from fastapi import FastAPI
+from sqlalchemy import update
+from sqlalchemy.future import select
+
+from database import async_session, engine
+from models import Base
+from models import Recipe as RecipeModel
+from schemas import Recipe as RecipeSchema
+from schemas import RecipeCreate
 
 app = FastAPI()
 
