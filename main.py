@@ -50,6 +50,12 @@ async def get_recipe(recipe_id: int):
             .values(views=RecipeModel.views + 1)
         )
 
-        return (await session.execute(
-            select(RecipeModel).where(RecipeModel.id == recipe_id)
-        )).scalars().first()
+        return (
+            (
+                await session.execute(
+                    select(RecipeModel).where(RecipeModel.id == recipe_id)
+                )
+            )
+            .scalars()
+            .first()
+        )
