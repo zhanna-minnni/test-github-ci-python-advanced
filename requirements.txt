@@ -9,4 +9,3 @@ pydantic[email]==2.0.0
 sqlalchemy[asyncio]==2.0.0
 fastapi==0.95.0
 sqlalchemy2-stubs==0.0.2a35
-types-fastapi==0.1.0
