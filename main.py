@@ -62,4 +62,3 @@ async def get_recipe(recipe_id: int):
         if recipe is None:
             raise HTTPException(status_code=404, detail="Recipe not found")
         return recipe
-
