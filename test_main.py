@@ -4,7 +4,7 @@ from main import app
 client = TestClient(app)
 
 
-def test_create_recipe() -> None:    
+def test_create_recipe() -> None:
     response = client.post(
         "/recipes/",
         json={
@@ -18,13 +18,13 @@ def test_create_recipe() -> None:
     assert "id" in response.json()
 
 
-def test_get_recipes() -> None:    
+def test_get_recipes() -> None:
     response = client.get("/recipes/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 
-def test_get_recipe() -> None:  
+def test_get_recipe() -> None:
     create_response = client.post(
         "/recipes/",
         json={
@@ -35,13 +35,13 @@ def test_get_recipe() -> None:
         },
     )
     recipe_id = create_response.json()["id"]
-    
+
     response = client.get(f"/recipes/{recipe_id}")
     assert response.status_code == 200
     assert response.json()["id"] == recipe_id
 
 
-def test_get_nonexistent_recipe() -> None:    
+def test_get_nonexistent_recipe() -> None:
     response = client.get("/recipes/9999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Recipe not found"
