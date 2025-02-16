@@ -7,5 +7,5 @@ mypy==0.931
 pytest==7.0.1
 pydantic>=2.0.0
 sqlalchemy[asyncio]==2.0.16
-fastapi==0.95.0
+fastapi==0.100.0
 sqlalchemy2-stubs==0.0.2a35
