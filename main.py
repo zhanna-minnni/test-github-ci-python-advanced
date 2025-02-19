@@ -1,7 +1,8 @@
-from typing import Annotated, List
+from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import update
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import async_session, engine
