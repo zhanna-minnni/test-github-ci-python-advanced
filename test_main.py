@@ -1,11 +1,34 @@
+import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 
 from main import app
+from models import Base
 
-client = TestClient(app)
+DATABASE_URL = "sqlite+aiosqlite:///./test_recipes.db"
+engine = create_async_engine(DATABASE_URL, echo=True)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
+@pytest.fixture
+async def db_session():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+        async with TestingSessionLocal() as session:
+            yield session
+            await session.rollback()
+    await engine.dispose()
 
-def create_test_recipe():
+@pytest.fixture
+def client(db_session):
+    app.dependency_overrides[get_db] = lambda: db_session
+    return TestClient(app)
+
+async def get_db():
+    async with TestingSessionLocal() as session:
+        yield session
+
+async def create_test_recipe(client):
     return client.post(
         "/recipes/",
         json={
@@ -16,30 +39,30 @@ def create_test_recipe():
         },
     )
 
-
-def test_create_recipe() -> None:
-    response = create_test_recipe()
+@pytest.mark.asyncio
+async def test_create_recipe(client):
+    response = await create_test_recipe(client)
     assert response.status_code == 200
     assert "id" in response.json()
 
-
-def test_get_recipes() -> None:
-    create_test_recipe()
+@pytest.mark.asyncio
+async def test_get_recipes(client):
+    await create_test_recipe(client)
     response = client.get("/recipes/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-
-def test_get_recipe() -> None:
-    create_response = create_test_recipe()
+@pytest.mark.asyncio
+async def test_get_recipe(client):
+    create_response = await create_test_recipe(client)
     recipe_id = create_response.json()["id"]
 
     response = client.get(f"/recipes/{recipe_id}")
     assert response.status_code == 200
     assert response.json()["id"] == recipe_id
 
-
-def test_get_nonexistent_recipe() -> None:
+@pytest.mark.asyncio
+async def test_get_nonexistent_recipe(client):
     response = client.get("/recipes/9999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Recipe not found"
