@@ -61,4 +61,3 @@ async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
-
