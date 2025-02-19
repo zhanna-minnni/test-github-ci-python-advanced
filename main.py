@@ -11,7 +11,6 @@ from schemas import Recipe as RecipeSchema, RecipeCreate
 
 app = FastAPI()
 
-# Определение значений по умолчанию на уровне модуля
 views_increment = RecipeModel.views + 1
 
 @app.on_event("startup")
@@ -28,7 +27,9 @@ async def get_db():
         yield session
 
 @app.post("/recipes/", response_model=RecipeSchema)
-async def create_recipe(recipe: RecipeCreate, db: AsyncSession = Depends(get_db)):
+async def create_recipe(
+    recipe: RecipeCreate, db: AsyncSession = Depends(get_db)
+):
     new_recipe = RecipeModel(**recipe.model_dump())
     db.add(new_recipe)
     await db.commit()
@@ -55,9 +56,9 @@ async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
 
     result = await db.execute(select(RecipeModel).where(RecipeModel.id == recipe_id))
     recipe = result.scalars().first()
-    
+
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
-    
+
     return recipe
 
