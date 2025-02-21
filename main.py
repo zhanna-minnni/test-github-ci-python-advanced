@@ -42,7 +42,9 @@ async def create_recipe(recipe: RecipeCreate, db: AsyncSession = Depends(get_db)
 @app.get("/recipes/", response_model=List[RecipeSchema])
 async def get_recipes(db: AsyncSession = Depends(get_db)):
     result = await db.execute(
-        select(RecipeModel).order_by(RecipeModel.views.desc(), RecipeModel.cooking_time)
+        select(RecipeModel).order_by(
+            RecipeModel.views.desc(), RecipeModel.cooking_time
+        )
     )
     return result.scalars().all()
 
@@ -63,3 +65,4 @@ async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
+
