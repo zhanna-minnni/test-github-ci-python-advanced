@@ -74,4 +74,3 @@ async def get_recipe(
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
-    
