@@ -13,20 +13,25 @@ app = FastAPI()
 
 views_increment = RecipeModel.views + 1
 
+
 async def get_db():
     async with async_session() as session:
         yield session
 
+
 db_dependency = Depends(get_db)
+
 
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+
 @app.on_event("shutdown")
 async def shutdown():
     await engine.dispose()
+
 
 @app.post("/recipes/", response_model=RecipeSchema)
 async def create_recipe(
@@ -46,6 +51,7 @@ async def get_recipes(db: AsyncSession = db_dependency):
         )
     )
     return result.scalars().all()
+
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
 async def get_recipe(
