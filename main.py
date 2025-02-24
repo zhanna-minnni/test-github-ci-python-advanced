@@ -31,7 +31,9 @@ async def get_db():
 
 
 @app.post("/recipes/", response_model=RecipeSchema)
-async def create_recipe(recipe: RecipeCreate, db: AsyncSession = Depends(get_db)):
+async def create_recipe(
+    recipe: RecipeCreate, db: AsyncSession = Depends(get_db)
+):
     new_recipe = RecipeModel(**recipe.model_dump())
     db.add(new_recipe)
     await db.commit()
@@ -50,19 +52,23 @@ async def get_recipes(db: AsyncSession = Depends(get_db)):
 
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
-async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
+async def get_recipe(
+    recipe_id: int, db: AsyncSession = Depends(get_db)
+):
     await db.execute(
-        update(RecipeModel.table)
+        update(RecipeModel)
         .where(RecipeModel.id == recipe_id)
         .values(views=views_increment)
     )
     await db.commit()
 
-    result = await db.execute(select(RecipeModel).where(RecipeModel.id == recipe_id))
+    result = await db.execute(
+        select(RecipeModel).where(RecipeModel.id == recipe_id)
+    )
     recipe = result.scalars().first()
 
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
-
+    
