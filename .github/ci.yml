@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Black (code formatting)
-        run: black . --check --exclude 'main\.py$'
+        run: black . --check
 
       - name: Run Flake8 (linting)
         run: flake8 .
