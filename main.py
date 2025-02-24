@@ -43,6 +43,7 @@ async def create_recipe(
     await db.refresh(new_recipe)
     return new_recipe
 
+
 @app.get("/recipes/", response_model=List[RecipeSchema])
 async def get_recipes(db: AsyncSession = db_dependency):
     result = await db.execute(
