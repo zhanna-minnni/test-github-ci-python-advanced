@@ -13,6 +13,8 @@ app = FastAPI()
 
 views_increment = RecipeModel.views + 1
 
+db_dependency = Depends(get_db)
+
 
 @app.on_event("startup")
 async def startup():
@@ -32,7 +34,7 @@ async def get_db():
 
 @app.post("/recipes/", response_model=RecipeSchema)
 async def create_recipe(
-    recipe: RecipeCreate, db: AsyncSession = Depends(get_db)
+    recipe: RecipeCreate, db: AsyncSession = db_dependency
 ):
     new_recipe = RecipeModel(**recipe.model_dump())
     db.add(new_recipe)
@@ -42,7 +44,7 @@ async def create_recipe(
 
 
 @app.get("/recipes/", response_model=List[RecipeSchema])
-async def get_recipes(db: AsyncSession = Depends(get_db)):
+async def get_recipes(db: AsyncSession = db_dependency):
     result = await db.execute(
         select(RecipeModel).order_by(
             RecipeModel.views.desc(), RecipeModel.cooking_time
@@ -53,7 +55,7 @@ async def get_recipes(db: AsyncSession = Depends(get_db)):
 
 @app.get("/recipes/{recipe_id}", response_model=RecipeSchema)
 async def get_recipe(
-    recipe_id: int, db: AsyncSession = Depends(get_db)
+    recipe_id: int, db: AsyncSession = db_dependency
 ):
     await db.execute(
         update(RecipeModel)
@@ -71,4 +73,3 @@ async def get_recipe(
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
-    
