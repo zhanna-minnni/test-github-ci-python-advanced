@@ -6,8 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import async_session, engine
-from models import Base, Recipe as RecipeModel
-from schemas import Recipe as RecipeSchema, RecipeCreate
+from models import Base
+from models import Recipe as RecipeModel
+from schemas import Recipe as RecipeSchema
+from schemas import RecipeCreate
 
 app = FastAPI()
 
